@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Emotion Detection | Muhammed Adil</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/emotion.css') }}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen">
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-12">
+            <div class="inline-block mb-4">
+                <h1 class="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                    😊 Face Emotion Detection
+                </h1>
+            </div>
+            <p class="text-xl md:text-2xl text-gray-300 font-light max-w-2xl mx-auto">
+                Real-time AI-powered emotion recognition using advanced machine learning
+            </p>
+            <div class="mt-6 flex justify-center gap-4 flex-wrap">
+                <span class="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-full text-sm font-medium border border-purple-500/30">
+                    🤖 AI-Powered
+                </span>
+                <span class="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium border border-blue-500/30">
+                    ⚡ Real-Time
+                </span>
+                <span class="px-4 py-2 bg-green-500/20 text-green-300 rounded-full text-sm font-medium border border-green-500/30">
+                    🎯 Accurate
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            
+            <!-- Left Column: Video & Controls -->
+            <div class="space-y-6">
+                
+                <!-- Video Container -->
+                <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-700/50">
+                    <div class="aspect-video">
+                        <video id="video" autoplay muted playsinline class="w-full h-full object-cover"></video>
+                        <canvas id="canvas" class="absolute top-0 left-0 w-full h-full pointer-events-none"></canvas>
+                    </div>
+                    <!-- Video Overlay Status -->
+                    <div id="videoStatus" class="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-lg text-white text-sm font-medium hidden">
+                        Camera Active
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex gap-4 justify-center">
+                    <button id="startBtn" onclick="startCamera()" 
+                            class="flex-1 md:flex-none px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none">
+                        <span class="flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                            Start Camera
+                        </span>
+                    </button>
+                    <button id="stopBtn" onclick="stopCamera()" disabled
+                            class="flex-1 md:flex-none px-8 py-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none">
+                        <span class="flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                            </svg>
+                            Stop Camera
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Info Card -->
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 shadow-xl">
+                    <h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        How It Works
+                    </h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-purple-400 mt-1">▸</span>
+                            <span>Click <strong class="text-white">"Start Camera"</strong> to begin emotion detection</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-purple-400 mt-1">▸</span>
+                            <span>Allow camera access when prompted by your browser</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-purple-400 mt-1">▸</span>
+                            <span>Position yourself in front of the camera for best results</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-purple-400 mt-1">▸</span>
+                            <span>Supported emotions: <span class="text-purple-300 font-medium">Happy, Sad, Angry, Surprised, Fearful, Disgusted, Neutral</span></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Column: Emotion Display -->
+            <div class="space-y-6">
+                
+                <!-- Emotion Display Card -->
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700/50 shadow-xl">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                            <svg class="w-7 h-7 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Detected Emotions
+                        </h2>
+                        <div class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-medium border border-purple-500/30">
+                            LIVE
+                        </div>
+                    </div>
+                    
+                    <div class="emotion-results" id="emotionResults">
+                        <div class="text-center py-12">
+                            <div class="inline-block p-4 bg-gray-700/50 rounded-full mb-4">
+                                <svg class="w-12 h-12 text-gray-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </div>
+                            <p class="text-gray-400 font-medium">Loading application...</p>
+                            <p class="text-gray-500 text-sm mt-2">Please wait while models are being loaded</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats/Features Card (Optional) -->
+                <div class="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30 shadow-xl">
+                    <h3 class="text-lg font-semibold text-white mb-4">AI Features</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="text-center p-4 bg-gray-800/50 rounded-xl">
+                            <div class="text-2xl font-bold text-purple-300">7</div>
+                            <div class="text-xs text-gray-400 mt-1">Emotions</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800/50 rounded-xl">
+                            <div class="text-2xl font-bold text-pink-300">35+</div>
+                            <div class="text-xs text-gray-400 mt-1">Frame Avg</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800/50 rounded-xl">
+                            <div class="text-2xl font-bold text-blue-300">70%</div>
+                            <div class="text-xs text-gray-400 mt-1">Min Confidence</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800/50 rounded-xl">
+                            <div class="text-2xl font-bold text-green-300">250ms</div>
+                            <div class="text-xs text-gray-400 mt-1">Detection Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-gray-700/50">
+            <div class="text-center space-y-2">
+                <p class="text-gray-400 text-sm">
+                    Built with <span class="text-purple-400 font-medium">Flask</span> & <span class="text-pink-400 font-medium">face-api.js</span> | 
+                    Powered by <span class="text-blue-400 font-medium">TensorFlow.js</span>
+                </p>
+                <p class="text-purple-300 font-semibold text-lg">
+                    Created by <span class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Muhammed Adil</span>
+                </p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- face-api.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.14/dist/face-api.min.js" 
+            onerror="console.error('Failed to load face-api.js'); document.getElementById('emotionResults').innerHTML = '<div class=\'text-center py-8\'><div class=\'inline-block p-4 bg-red-500/20 rounded-full mb-4\'><svg class=\'w-12 h-12 text-red-400\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\'></path></svg></div><p class=\'text-red-400 font-medium\'>Error: Failed to load face-api.js library</p><p class=\'text-gray-500 text-sm mt-2\'>Please check your internet connection</p></div>';"></script>
+    <script>
+        // Check if face-api.js loaded after a delay
+        setTimeout(() => {
+            if (typeof faceapi === 'undefined') {
+                console.error('face-api.js did not load');
+                const resultsDiv = document.getElementById('emotionResults');
+                if (resultsDiv) {
+                    resultsDiv.innerHTML = '<div class="text-center py-8"><div class="inline-block p-4 bg-red-500/20 rounded-full mb-4"><svg class="w-12 h-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><p class="text-red-400 font-medium">Error: face-api.js library failed to load</p><p class="text-gray-500 text-sm mt-2">Please refresh the page or check your internet connection</p></div>';
+                }
+            } else {
+                console.log('face-api.js loaded successfully');
+            }
+        }, 3000);
+    </script>
+    <script src="{{ url_for('static', filename='js/emotion-detection.js') }}"></script>
+</body>
+</html>

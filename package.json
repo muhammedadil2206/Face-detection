@@ -1,0 +1,17 @@
+{
+  "name": "face-emotion-detection",
+  "version": "1.0.0",
+  "description": "Real-time face emotion detection web application",
+  "scripts": {
+    "build": "python build.py"
+  },
+  "keywords": [
+    "emotion-detection",
+    "face-api",
+    "ai",
+    "machine-learning"
+  ],
+  "author": "Muhammed Adil",
+  "license": "MIT"
+}
+
